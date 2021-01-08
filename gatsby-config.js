@@ -43,5 +43,8 @@ module.exports = {
       },
     },
     'gatsby-plugin-typegen',
+    'gatsby-plugin-root-import',
+    'gatsby-plugin-postcss',
+    'gatsby-plugin-emotion',
   ],
 }
