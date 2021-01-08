@@ -22,9 +22,9 @@ const SEO: FC<SEOProps> = ({
   meta = [],
   description = ``,
 }) => {
-  const { site } = useStaticQuery(
+  const { site } = useStaticQuery<GatsbyTypes.SEOQuery>(
     graphql`
-      query {
+      query SEO {
         site {
           siteMetadata {
             title
@@ -36,8 +36,8 @@ const SEO: FC<SEOProps> = ({
     `
   )
 
-  const metaDescription = description || site.siteMetadata.description
-  const defaultTitle = site.siteMetadata?.title
+  const metaDescription = description || site?.siteMetadata?.description
+  const defaultTitle = site?.siteMetadata?.title
 
   return (
     <Helmet
@@ -69,7 +69,7 @@ const SEO: FC<SEOProps> = ({
         },
         {
           name: `twitter:creator`,
-          content: site.siteMetadata?.author || ``,
+          content: site?.siteMetadata?.author || ``,
         },
         {
           name: `twitter:title`,
