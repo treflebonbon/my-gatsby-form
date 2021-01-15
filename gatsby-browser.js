@@ -1,7 +1,13 @@
-/**
- * Implement Gatsby's Browser APIs in this file.
- *
- * See: https://www.gatsbyjs.com/docs/browser-apis/
- */
+import React from 'react'
+import { RecoilRoot } from 'recoil'
+import { QueryClient, QueryClientProvider } from 'react-query'
 
-// You can delete this file if you're not using it
+const queryClient = new QueryClient()
+
+export const wrapRootElement = ({ element }) => {
+  return (
+    <RecoilRoot>
+      <QueryClientProvider client={queryClient}>{element}</QueryClientProvider>
+    </RecoilRoot>
+  )
+}
