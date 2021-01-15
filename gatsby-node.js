@@ -1,4 +1,3 @@
-/* eslint-disable */
 'use strict'
 
 require('ts-node').register({

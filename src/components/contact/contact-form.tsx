@@ -3,19 +3,14 @@ import { useRecoilState, useRecoilValue } from 'recoil'
 import { useMutation } from 'react-query'
 
 import { inputsState, Inputs, formModeState, FormMode } from 'src/store/contact'
-import {
-  ContactCompleted,
-  ContactFailed,
-  ContactLoading,
-} from './contact-completed'
 import { ContactConfirmation } from './contact-confirmation'
 import { ContactEdit } from './contact-edit'
-import { Button } from 'src/components/shared'
+import { Button, Alert, AlertIcon } from 'src/components/shared'
 
 export const ContactForm: FC = () => {
   const [formMode, setFormMode] = useRecoilState(formModeState)
   const inputs = useRecoilValue(inputsState)
-  const { mutate, isLoading, isError } = useMutation(
+  const { mutate, isLoading, isError, isSuccess } = useMutation(
     (newInputs: Inputs) => {
       return fetch('http://localhost:9000/.netlify/functions/contact/', {
         method: 'POST',
@@ -27,9 +22,7 @@ export const ContactForm: FC = () => {
       })
     },
     {
-      onSuccess: () => {
-        setFormMode(FormMode.Completed)
-      },
+      onSettled: () => setFormMode(FormMode.Edit),
     }
   )
 
@@ -40,21 +33,13 @@ export const ContactForm: FC = () => {
     mutate(inputs)
   }
 
-  if (formMode === FormMode.Completed) {
-    return (
-      <>
-        <ContactCompleted />
-        <ContactEdit />
-      </>
-    )
-  }
-
   if (formMode === FormMode.Confirmation) {
     return isLoading ? (
-      <ContactLoading />
+      <Alert status="info" message="送信中...">
+        <AlertIcon status="info" />
+      </Alert>
     ) : (
       <>
-        {isError && <ContactFailed />}
         <ContactConfirmation />
         <div>
           <Button onClick={onBack}>戻る</Button>
@@ -64,5 +49,19 @@ export const ContactForm: FC = () => {
     )
   }
 
-  return <ContactEdit />
+  return (
+    <>
+      {isError && (
+        <Alert status="error" message="送信できませんでした。">
+          <AlertIcon status="error" />
+        </Alert>
+      )}
+      {isSuccess && (
+        <Alert status="success" message="送信しました。">
+          <AlertIcon status="success" />
+        </Alert>
+      )}
+      <ContactEdit />
+    </>
+  )
 }
